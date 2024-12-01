@@ -11,3 +11,4 @@ My goal this year:
 
 Puzzle | Solution(s) | Remarks |
 ---    |---    |----
+[Day 1: Historian Hysteria](https://adventofcode.com/2024/day/1) | [Kotlin](src/Day01.kt) | Easy warm-up puzzle for day one!
