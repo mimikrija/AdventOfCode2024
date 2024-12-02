@@ -1,4 +1,4 @@
-# :christmas_tree: :snake: :sparkles: Maja's Advent of Code 2023 :sparkles: :snake: :christmas_tree:
+# :christmas_tree: :snake: :sparkles: Maja's Advent of Code 2024 :sparkles: :snake: :christmas_tree:
 
 Ho, ho, ho, welcome to my 2024 Advent of Code repository!
 My goal this year:
