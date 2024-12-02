@@ -9,6 +9,7 @@ My goal this year:
 ## Solutions overview
 
 
-Puzzle | Solution(s) | Remarks |
----    |---    |----
+Puzzle | Solution(s)            | Remarks |
+---    |------------------------|----
 [Day 1: Historian Hysteria](https://adventofcode.com/2024/day/1) | [Kotlin](src/Day01.kt) | Easy warm-up puzzle for day one!
+[Day 2: Red-Nosed Reports](https://adventofcode.com/2024/day/2) | [Kotlin](src/Day02.kt) | I learned about `zipWithNext()`. I still want to learn a better way to solve pt2.
