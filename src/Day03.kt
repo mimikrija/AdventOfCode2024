@@ -10,8 +10,7 @@ fun main() {
     val reducedInput =
         dosAndDonts
             .findAll(oneLineInput)
-            .toList()
-            .joinToString { it.groupValues.joinToString() }
+            .joinToString { it.groupValues.toString() }
 
 
     val part2 = reducedInput.calculateScore()
@@ -25,11 +24,13 @@ fun main() {
 
 private fun String.calculateScore(): Int {
     val multiplyRegexGroup = Regex("mul\\((\\d{1,3}),(\\d{1,3})\\)")
-    return multiplyRegexGroup.findAll(this).toList().sumOf {
-        it.groupValues.let { groups ->
-            groups.drop(1).map { it.toInt() }.reduce { bla, truc -> bla * truc }
+    return multiplyRegexGroup
+        .findAll(this)
+        .sumOf {
+            val (_, left, right) = it.groupValues
+            left.toInt() * right.toInt()
         }
     }
-}
+
 
 
