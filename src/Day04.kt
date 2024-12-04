@@ -21,20 +21,18 @@ fun main() {
 private fun Map<Pair<Int, Int>, String>.countXMASInAllDirections() =
     listOf((1 to 0), (-1 to 0), (0 to 1), (0 to -1), (1 to 1), (-1 to 1), (1 to -1), (-1 to -1))
         .sumOf {direction ->
-            this.filter { (_, letter) -> letter == "X" }
-                .filter { (position, _) -> this[position + direction] == "M" }
-                .filter { (position, _) -> this[position + 2 * direction] == "A" }
-                .filter { (position, _) -> this[position + 3 * direction] == "S" }
-                .size
+            this
+                .count { (position, _) ->
+                    listOf(0, 1, 2, 3).map { this[position + it * direction] }.joinToString("") =="XMAS"}
     }
 
 private fun Map<Pair<Int, Int>, String>.countBigXMAS(): Int {
     val mainDiagonal = listOf(1 to 1, -1 to -1)
     val otherDiagonal = listOf(-1 to 1, 1 to -1)
-    return this.filter { (_, letter) -> letter == "A" }
+    return this
+        .filter { (_, letter) -> letter == "A" }
         .filter { (position, _) -> mainDiagonal.map { diagonal -> this[position.plus(diagonal)] }.areMS() }
-        .filter { (position, _) -> otherDiagonal.map { diagonal -> this[position.plus(diagonal)] }.areMS() }
-        .size
+        .count { (position, _) -> otherDiagonal.map { diagonal -> this[position.plus(diagonal)] }.areMS() }
 }
 
 
