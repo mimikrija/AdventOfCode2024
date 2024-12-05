@@ -23,7 +23,7 @@ private fun Map<Pair<Int, Int>, String>.countXMASInAllDirections() =
         .sumOf {direction ->
             this
                 .count { (position, _) ->
-                    listOf(0, 1, 2, 3).map { this[position + it * direction] }.joinToString("") =="XMAS"}
+                    (0..3).map { this[position + it * direction] }.joinToString("") =="XMAS"}
     }
 
 private fun Map<Pair<Int, Int>, String>.countBigXMAS(): Int {
