@@ -2,16 +2,13 @@ fun main() {
     val rawInput = readInput("03")
     val oneLineInput = "do()" + rawInput + "don't()"
 
-
     val part1 = oneLineInput.calculateScore()
-
 
     val dosAndDonts = Regex("(?<=do\\(\\)).*?(?=don't\\(\\))")
     val reducedInput =
         dosAndDonts
             .findAll(oneLineInput)
             .joinToString { it.groupValues.toString() }
-
 
     val part2 = reducedInput.calculateScore()
 
@@ -30,7 +27,4 @@ private fun String.calculateScore(): Int {
             val (_, left, right) = it.groupValues
             left.toInt() * right.toInt()
         }
-    }
-
-
-
+}

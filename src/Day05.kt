@@ -36,30 +36,41 @@ fun main() {
 
     assert(part1 == 6505)
     assert(part2 == 1930)
-
 }
-
-
 
 private fun order(
     pageOrderingRules: List<Pair<Int, Int>>,
-    page: List<Int>
-): List<Int>
-{ var currentPage = page
-    while (!isOrdered(pageOrderingRules, currentPage))
-    {
+    page: List<Int>,
+): List<Int> {
+    var currentPage = page
+    while (!isOrdered(pageOrderingRules, currentPage)) {
         pageOrderingRules.map { (left, right) ->
             if ((left in currentPage) and (right in currentPage) and (currentPage.indexOf(left) > currentPage.indexOf(right))) {
                 swap(currentPage, currentPage.indexOf(left), currentPage.indexOf(right))
             }
         }
     }
-        return currentPage
+    return currentPage
 }
+
+private fun byOrderingRules(orderingRules: List<Pair<Int, Int>>) =
+    java.util.Comparator { first: Int, second: Int ->
+        when {
+            first to second in orderingRules -> 1
+            second to first in orderingRules -> -1
+            else -> 1
+        }
+    }
+
+private fun List<Int>.isSorted(orderingRules: List<Pair<Int, Int>>) =
+    run {
+        val sorted = this.sortedWith(byOrderingRules(orderingRules))
+        (this zip sorted).all { (first, second) -> first == second } to sorted
+    }
 
 private fun isOrdered(
     pageOrderingRules: List<Pair<Int, Int>>,
-    page: List<Int>
+    page: List<Int>,
 ) = pageOrderingRules.all { (left, right) ->
     if ((left in page) and (right in page)) {
         page.indexOf(left) < page.indexOf(right)
@@ -67,5 +78,3 @@ private fun isOrdered(
         true
     }
 }
-
-
