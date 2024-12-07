@@ -1,10 +1,10 @@
 fun main() {
-
-    val letterMap = readInput("04")
-        .flatMapIndexed{row, line -> line
-            .mapIndexed{column, letter -> column to row to letter.toString() }}
-        .associate { (position, letter) -> position to letter }
-
+    val letterMap =
+        readInput("04")
+            .flatMapIndexed { row, line ->
+                line
+                    .mapIndexed { column, letter -> column to row to letter.toString() }
+            }.associate { (position, letter) -> position to letter }
 
     val part1 = letterMap.countXMASInAllDirections()
     val part2 = letterMap.countBigXMAS()
@@ -16,15 +16,14 @@ fun main() {
     assert(part2 == 1930)
 }
 
-
-
 private fun Map<Pair<Int, Int>, String>.countXMASInAllDirections() =
     listOf((1 to 0), (-1 to 0), (0 to 1), (0 to -1), (1 to 1), (-1 to 1), (1 to -1), (-1 to -1))
-        .sumOf {direction ->
+        .sumOf { direction ->
             this
                 .count { (position, _) ->
-                    (0..3).map { this[position + it * direction] }.joinToString("") =="XMAS"}
-    }
+                    (0..3).map { this[position + it * direction] }.joinToString("") == "XMAS"
+                }
+        }
 
 private fun Map<Pair<Int, Int>, String>.countBigXMAS(): Int {
     val mainDiagonal = listOf(1 to 1, -1 to -1)
@@ -34,9 +33,5 @@ private fun Map<Pair<Int, Int>, String>.countBigXMAS(): Int {
         .filter { (position, _) -> mainDiagonal.map { diagonal -> this[position.plus(diagonal)] }.areMS() }
         .count { (position, _) -> otherDiagonal.map { diagonal -> this[position.plus(diagonal)] }.areMS() }
 }
-
-
-operator fun Pair<Int,Int>.plus(other: Pair<Int, Int>) = Pair(this.first + other.first, this.second + other.second)
-operator fun Int.times(other: Pair<Int, Int>) = Pair(this * other.first, this * other.second)
 
 private fun List<String?>.areMS() = this.containsAll(listOf("S", "M"))

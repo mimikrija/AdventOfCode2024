@@ -20,3 +20,7 @@ fun String.md5() =
  * The cleaner shorthand for printing output.
  */
 fun Any?.println() = println(this)
+
+operator fun Pair<Int, Int>.plus(other: Pair<Int, Int>) = Pair(this.first + other.first, this.second + other.second)
+
+operator fun Int.times(other: Pair<Int, Int>) = Pair(this * other.first, this * other.second)
