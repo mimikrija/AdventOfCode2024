@@ -1,32 +1,45 @@
 import java.util.Collections.swap
 
 fun main() {
-
     val instructions = readInput("05")
 
-    val firstInstructions = instructions
-        .takeWhile { it.isNotEmpty() }
+    val firstInstructions =
+        instructions
+            .takeWhile { it.isNotEmpty() }
 
-    val secondInstructions = (instructions - firstInstructions)
-        .drop(1) // get rid of the empty line
+    val secondInstructions =
+        (instructions - firstInstructions)
+            .drop(1) // get rid of the empty line
 
-    val pageOrderingRules = firstInstructions
-        .map { line -> line.split('|').map { it.toInt() } }
-        .map {it.first() to it.last()}
+    val pageOrderingRules =
+        firstInstructions
+            .map { line -> line.split('|').map { it.toInt() } }
+            .map { it.first() to it.last() }
 
-    val pagesToProduce = secondInstructions
-        .map { line -> line.split(',')
-            .map { it.toInt() } }
+    val pagesToProduce =
+        secondInstructions
+            .map { line ->
+                line
+                    .split(',')
+                    .map { it.toInt() }
+            }
 
-    val ordered = pagesToProduce
-        .filter { page ->
-            isOrdered(pageOrderingRules, page)
-        }
+    val test1 =
+        pagesToProduce
+            .map { it.isSorted(orderingRules = pageOrderingRules) }
+            .filter { it.first }
+            .map { it.second }
+    println(test1.sumOf { it[it.size / 2] })
 
-    val unordered = (pagesToProduce - ordered.toSet())
-        .map {  page -> order(pageOrderingRules, page) }
+    val ordered =
+        pagesToProduce
+            .filter { page ->
+                isOrdered(pageOrderingRules, page)
+            }
 
-
+    val unordered =
+        (pagesToProduce - ordered.toSet())
+            .map { page -> order(pageOrderingRules, page) }
 
     val part1 = ordered.sumOf { it[it.size / 2] }
     val part2 = unordered.sumOf { it[it.size / 2] }
@@ -35,7 +48,7 @@ fun main() {
     println("Part 2 solution is $part2")
 
     assert(part1 == 6505)
-    assert(part2 == 1930)
+    assert(part2 == 6897)
 }
 
 private fun order(
