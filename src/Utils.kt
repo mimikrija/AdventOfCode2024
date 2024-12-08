@@ -22,5 +22,11 @@ fun String.md5() =
 fun Any?.println() = println(this)
 
 operator fun Pair<Int, Int>.plus(other: Pair<Int, Int>) = Pair(this.first + other.first, this.second + other.second)
+operator fun Pair<Int, Int>.minus(other: Pair<Int, Int>) = Pair(this.first - other.first, this.second - other.second)
 
 operator fun Int.times(other: Pair<Int, Int>) = Pair(this * other.first, this * other.second)
+
+fun <T> getCombinations(list: List<T>): List<Pair<T, T>> =
+    list.flatMapIndexed { index, value ->
+        list.drop(index + 1).map { other -> value to other }
+    }
