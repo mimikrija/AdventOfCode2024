@@ -25,6 +25,36 @@ fun main() {
     assert(part1 == 4433)
 }
 
+sealed interface Direction {
+    val direction: Pair<Int, Int>
+
+    fun rotateClockwise(): Direction
+}
+
+data object Up : Direction {
+    override val direction = 0 to -1
+
+    override fun rotateClockwise() = Right
+}
+
+data object Right : Direction {
+    override val direction = 1 to 0
+
+    override fun rotateClockwise() = Down
+}
+
+data object Down : Direction {
+    override val direction = 0 to 1
+
+    override fun rotateClockwise() = Left
+}
+
+data object Left : Direction {
+    override val direction = -1 to 0
+
+    override fun rotateClockwise() = Up
+}
+
 private fun countVisits(
     current: Pair<Int, Int>,
     direction: Direction = Up,

@@ -22,6 +22,7 @@ fun String.md5() =
 fun Any?.println() = println(this)
 
 operator fun Pair<Int, Int>.plus(other: Pair<Int, Int>) = Pair(this.first + other.first, this.second + other.second)
+
 operator fun Pair<Int, Int>.minus(other: Pair<Int, Int>) = Pair(this.first - other.first, this.second - other.second)
 
 operator fun Int.times(other: Pair<Int, Int>) = Pair(this * other.first, this * other.second)
@@ -30,3 +31,33 @@ fun <T> getCombinations(list: List<T>): List<Pair<T, T>> =
     list.flatMapIndexed { index, value ->
         list.drop(index + 1).map { other -> value to other }
     }
+
+sealed interface Direction {
+    val direction: Pair<Int, Int>
+
+    fun rotateClockwise(): Direction
+}
+
+data object Up : Direction {
+    override val direction = 0 to -1
+
+    override fun rotateClockwise() = Right
+}
+
+data object Right : Direction {
+    override val direction = 1 to 0
+
+    override fun rotateClockwise() = Down
+}
+
+data object Down : Direction {
+    override val direction = 0 to 1
+
+    override fun rotateClockwise() = Left
+}
+
+data object Left : Direction {
+    override val direction = -1 to 0
+
+    override fun rotateClockwise() = Up
+}
