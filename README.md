@@ -17,4 +17,5 @@ Puzzle | Solution(s)            | Remarks |
 [Day 4](https://adventofcode.com/2024/day/4) | [Kotlin](src/Day04.kt) |
 [Day 5](https://adventofcode.com/2024/day/5) | [Kotlin](src/Day05.kt) |
 [Day 6](https://adventofcode.com/2024/day/6) | [Kotlin](src/Day06.kt) |
-[Day 8](https://adventofcode.com/2024/day/8) | [Kotlin](src/Day08.kt) | 
+[Day 8](https://adventofcode.com/2024/day/8) | [Kotlin](src/Day08.kt) |
+[Day 10](https://adventofcode.com/2024/day/10) | [Kotlin](src/Day10.kt) | 
