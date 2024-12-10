@@ -2,72 +2,57 @@
 
 fun main() {
     val wholeMap =
-        readInput("06")
+        readInput("10")
             .flatMapIndexed { row, line ->
                 line
-                    .mapIndexed { column, letter -> column to row to letter.toString() }
-            }.associate { (position, letter) -> position to letter }
+                    .mapIndexed { column, letter -> column to row to letter.digitToInt() }
+            }.associate { (position, height) -> position to height }
 
-    val obstructions =
-        wholeMap
-            .filter { (_, letter) -> letter == "#" }
-            .map { it.key }
-            .toSet()
+    val zeroes = wholeMap.filter { (_, height) -> height == 0 }.keys
+    val nines = wholeMap.filter { (_, height) -> height == 9 }.keys
 
-    val availablePositions = wholeMap.map { it.key }.toSet() - obstructions
-
-    val start = wholeMap.filter { (_, letter) -> letter == "^" }.map { it.key }.first()
-
-    val part1 = countVisits(start, visited = setOf(start), available = availablePositions, obstructions = obstructions)
+    val part1 = zeroes.sumOf { start -> reachableNines(wholeMap, start, nines).count() }
+    val part2 = zeroes.sumOf { start -> uniquePathsToNines(wholeMap, start, nines) }
 
     println("Part 1 solution is $part1")
+    println("Part 2 solution is $part2")
 
-    assert(part1 == 4433)
+    assert(part1 == 760)
+    assert(part2 == 1764)
 }
 
-sealed interface Direction {
-    val direction: Pair<Int, Int>
-
-    fun rotateClockwise(): Direction
-}
-
-data object Up : Direction {
-    override val direction = 0 to -1
-
-    override fun rotateClockwise() = Right
-}
-
-data object Right : Direction {
-    override val direction = 1 to 0
-
-    override fun rotateClockwise() = Down
-}
-
-data object Down : Direction {
-    override val direction = 0 to 1
-
-    override fun rotateClockwise() = Left
-}
-
-data object Left : Direction {
-    override val direction = -1 to 0
-
-    override fun rotateClockwise() = Up
-}
-
-private fun countVisits(
+private fun reachableNines(
+    heightMap: Map<Pair<Int, Int>, Int>,
     current: Pair<Int, Int>,
-    direction: Direction = Up,
-    visited: Set<Pair<Int, Int>>,
-    available: Set<Pair<Int, Int>>,
-    obstructions: Set<Pair<Int, Int>>,
-): Int {
-    if (visited == available) return visited.size
-    return when (val nextPosition = current + direction.direction) {
-        in obstructions ->
-            countVisits(current, direction.rotateClockwise(), visited, available, obstructions)
-        in available ->
-            countVisits(nextPosition, direction, visited union setOf(nextPosition), available, obstructions)
-        else -> visited.size
+    goals: Set<Pair<Int, Int>>,
+    visited: Set<Pair<Int, Int>> = setOf(current),
+): Set<Pair<Int, Int>> {
+    if (current in goals) {
+        return setOf(current)
     }
+    return listOf(Up, Down, Left, Right)
+        .map { direction -> current + direction.direction }
+        .filter { it !in visited }
+        .filter { it in heightMap }
+        .filter { (heightMap[current]?.let { it1 -> heightMap[it]?.minus(it1) } ?: 0) == 1 }
+        .flatMap { reachableNines(heightMap, it, goals, visited + it) }
+        .toSet()
+}
+
+private fun uniquePathsToNines(
+    heightMap: Map<Pair<Int, Int>, Int>,
+    current: Pair<Int, Int>,
+    goals: Set<Pair<Int, Int>>,
+    visited: Set<Pair<Int, Int>> = setOf(current),
+): Int {
+    if (current in goals) {
+        return 1
+    }
+    return listOf(Up, Down, Left, Right)
+        .map { direction -> current + direction.direction }
+        .filter { it !in visited }
+        .filter { it in heightMap }
+        .filter { (heightMap[current]?.let { it1 -> heightMap[it]?.minus(it1) } ?: 0) == 1 }
+        .map { uniquePathsToNines(heightMap, it, goals, visited + it) }
+        .sum()
 }
