@@ -49,16 +49,15 @@ private fun handleStones(
 ): Map<Long, Long> {
     if (blink == blinks) return counts
 
+    val next = mutableMapOf<Long, Long>()
+    counts.forEach { (stone, quantity) ->
+        stone.applyRules().forEach {
+            next[it] = next.getOrDefault(it, 0L) + quantity
+        }
+    }
+
     return handleStones(
-        counts
-            .map { (stone, quantity) ->
-                stone
-                    .applyRules()
-                    .groupingBy { it }
-                    .eachCount()
-                    .map { (s, q) -> s to q * quantity }
-                    .associate { it }
-            }.reduce { a, b -> merge(a, b) },
+        next.toMap(),
         blinks,
         blink + 1,
     )
