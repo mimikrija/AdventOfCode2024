@@ -1,3 +1,4 @@
+import java.util.Queue
 
 
 fun main() {
@@ -49,15 +50,20 @@ private fun findRegionsPerLetter(
 private fun findSingleRegion(
     plot: Pair<Int, Int>,
     plots: Set<Pair<Int, Int>>,
-    visited: Set<Pair<Int, Int>> = setOf(plot),
 ): Set<Pair<Int, Int>> {
-    val neighbours = setOf(Up, Down, Left, Right).map { plot + it.direction }.filter { it in plots - visited - plot }
+    val visited = setOf(plot).toMutableSet()
+    val frontier = ArrayDeque(listOf(plot))
+    while( frontier.isNotEmpty() ) {
+        val current = frontier.removeFirst()
+        val neighbours =
+            setOf(Up, Down, Left, Right).map { current + it.direction }.filter { it in plots - visited }
 
-    if (neighbours.isEmpty()) return visited
+        neighbours.forEach{frontier.add(it)}
+        visited += neighbours
 
-    return neighbours
-        .flatMap { findSingleRegion(it, plots - visited - plot, visited + neighbours + plot) }
-        .toSet()
+    }
+    return visited
+
 }
 
 private fun Set<Pair<Int, Int>>.area() = this.size
