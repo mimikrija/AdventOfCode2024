@@ -17,13 +17,13 @@ fun main() {
     val part1 =
         plotsPerLetter
             .map { (plotName, plots) ->
-                findRegionsPerLetter(plotName, plots).sumOf { it.area() * it.perimeter() }
+                findRegionsPerLetter(plots).sumOf { it.area() * it.perimeter().size }
             }.sum()
 
     val part2 =
         plotsPerLetter
-            .map { (plotName, plots) ->
-                findRegionsPerLetter(plotName, plots).sumOf {
+            .map { (_, plots) ->
+                findRegionsPerLetter(plots).sumOf {
                     it.area() * it.sidesPerRegion()
                 }
             }.sum()
@@ -34,10 +34,7 @@ fun main() {
     assert(part2 == 893790)
 }
 
-private fun findRegionsPerLetter(
-    name: String,
-    plots: List<Pair<Int, Int>>,
-): List<Set<Pair<Int, Int>>> {
+private fun findRegionsPerLetter(plots: List<Pair<Int, Int>>): List<Set<Pair<Int, Int>>> {
     val plotsToSplit = plots.toMutableSet()
 
     val plotsToSkip = emptySet<Pair<Int, Int>>().toMutableSet()
@@ -74,22 +71,20 @@ private fun findSingleRegion(
 
 private fun Set<Pair<Int, Int>>.area() = this.size
 
-private fun Set<Pair<Int, Int>>.perimeter(): Int =
+private fun Set<Pair<Int, Int>>.perimeter() =
     this
         .flatMap { plot ->
             listOf(Up, Down, Left, Right)
                 .map { plot + it.direction }
                 .filterNot { r -> r in this }
-        }.size
+        }
 
 private fun Set<Pair<Int, Int>>.sidesPerRegion(): Int {
-
     val allDirections = listOf(Up, Down, Left, Right)
     val leftUp = listOf(Left, Up)
     val rightUp = listOf(Right, Up)
     val leftDown = listOf(Left, Down)
     val rightDown = listOf(Right, Down)
-
 
     val leftAndUpOutSideCorners =
         this
@@ -140,17 +135,10 @@ private fun Set<Pair<Int, Int>>.sidesPerRegion(): Int {
     val cancelRightUp =
         rightAndUpOutSideCorners.count { position -> position + Up.direction + Right.direction in leftAndDownOutSideCorners } * 2
 
-
-    val perimeter =
-        this
-            .flatMap { plot ->
-                listOf(Up, Down, Left, Right)
-                    .map { plot + it.direction }
-                    .filterNot { r -> r in this }
-            }.toSet()
-
     val insideCorners =
-        perimeter
+        this
+            .perimeter()
+            .toSet()
             .sumOf { position ->
                 val allInsideNeighbours = allDirections.map { dir -> position + dir.direction }.filter { it in this }.toSet()
                 if (allInsideNeighbours.size < 2) {
