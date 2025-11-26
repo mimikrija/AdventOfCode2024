@@ -63,3 +63,5 @@ data object Left : Direction {
 
     override fun rotateClockwise() = Up
 }
+
+data class Coordinate(val x: Int, val y: Int)
