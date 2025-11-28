@@ -2,6 +2,7 @@ import java.math.BigInteger
 import java.security.MessageDigest
 import kotlin.io.path.Path
 import kotlin.io.path.readText
+import kotlin.math.absoluteValue
 
 /**
  * Reads lines from the given input txt file.
@@ -64,4 +65,6 @@ data object Left : Direction {
     override fun rotateClockwise() = Up
 }
 
-data class Coordinate(val x: Int, val y: Int)
+data class Coordinate(val x: Int, val y: Int){
+    fun manhattanDistanceTo(other: Coordinate) = (x - other.x).absoluteValue + (y - other.y).absoluteValue
+}

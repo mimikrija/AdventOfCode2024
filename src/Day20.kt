@@ -1,3 +1,5 @@
+import minus
+
 fun main() {
     val wholeMap =
         readInput("20")
@@ -13,45 +15,52 @@ fun main() {
         .filter { (_, letter) -> letter != "#"}
         .map { it.key }
     
-
     
     val cameFromPath = shortestPathAvailable(availablePositions, start, end)
-    val fullPath = cameFromPath.constructPath(start, end)
+    val fullPath = cameFromPath.constructPath(start, end)!!
+
     
-    val part1 = fullPath?.flatMap { start ->
-        val candidates = byPassCandidates(
-            position = start,
-            fullPath = fullPath,
-        )
-        candidates
-            .mapNotNull{ end -> bypassGain(
-                cameFrom = cameFromPath,
-                start = start,
-                end = end,
-            ) }.filter { it > 0 }
-    }?.groupingBy { it }?.eachCount()?.filter { it.key >=100 }?.map { it.value }?.sum()
+    val part1 = fullPath.flatMap { firstPoint -> fullPath
+        .map { secondPoint -> firstPoint to secondPoint }
+        .filter { (firstPoint, secondPoint) -> firstPoint.manhattanDistanceTo(secondPoint) == 2 }
+        .mapNotNull { pair -> bypassGain( fullPath, pair.first, pair.second) }
+    }
+        .filter { it >= 100 }
+        .groupingBy { it }
+        .eachCount()
+        .map { it.value }
+        .sum()
+    
+
+    val part2 = fullPath.flatMap { firstPoint -> fullPath
+        .map { secondPoint -> firstPoint to secondPoint }
+        .filter { (firstPoint, secondPoint) -> firstPoint.manhattanDistanceTo(secondPoint) <= 20 }
+        .mapNotNull { pair -> bypassGain( fullPath, pair.first, pair.second) }
+    }
+        .filter { it >=100 }
+        .groupingBy { it }
+        .eachCount()
+        .map { it.value }
+        .sum()
     
 
     println("Part 1 solution is $part1")
- 
+    println("Part 2 solution is $part2")
+   
     
     assert(part1 == 1263)
+    assert(part2 == 957831)
     
 }
 
-private fun byPassCandidates(
-    position: Coordinate,
-    fullPath: List<Coordinate>,
-): List<Coordinate> {
-    val neighbors = neighbors(position, step = 2)
-    return neighbors.filter { it in fullPath }
-}
+
 
 private fun bypassGain(
-    cameFrom: MutableMap<Coordinate, Coordinate>,
+    fullPath: List<Coordinate>,
     start: Coordinate,
-    end: Coordinate
-): Long? = cameFrom.constructPath(start, end)?.size?.minus(2)?.toLong()
+    end: Coordinate,
+): Int = fullPath.indexOf(end) - fullPath.indexOf(start) - start.manhattanDistanceTo(end)
+
 
 
 private fun shortestPathAvailable(
@@ -102,6 +111,7 @@ private fun MutableMap<Coordinate, Coordinate>.constructPath(
            return null
         }
     }
+    path.add(start)
     return path.reversed()
 }
 
